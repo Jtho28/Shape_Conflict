@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>push</title>
+    <link href="./style.css" rel="stylesheet">
+    <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♾</text></svg>">
+</head>
+
+<body>
+    <canvas id="canv"></canvas>
+
+    <script type="module">
+        "use strict"
+        import { getCanvas } from "./engine/scripts.js"
+        import Time from "./engine/Time.js"
+        import Input from "./engine/Input.js"
+
+        import Game from "./engine/Game.js"
+        import MainScene from "./push/MainScene.js"
+        import StartScene from "./push/StartScene.js"
+
+        Input.attach(document)
+
+        let { canvas, ctx } = getCanvas()
+
+        let scene = new StartScene()
+        let scene2 = new MainScene()
+        Game.scenes.push(scene)
+        Game.scenes.push(scene2)
+        Game.changeScene(0)
+
+        //Camera setup
+        Game.cameraX = 0;
+        Game.cameraY = 0
+        Game.cameraWidth = 800
+        Game.cameraULX = -400;
+        Game.cameraULY = -400
+
+        function tick()
+        {
+            //Change the scene if a componenet requested a scene change through
+            //Game.changeScene(x) during the previous tick
+            Game.updateScene()
+
+            //Update the input. Specifically, update which keys went down or up in the last frame
+            Input.update()
+
+            //Update all gameObjects
+            Game.scene().update(ctx)
+
+            //Run functions
+            Game.scene().draw(ctx)
+
+            Game.scene().remove()
+            Time.timePassed += Time.secondsBetweenFrame;
+        }
+
+
+        setInterval(tick, Time.millisecondsBetweenFrames)
+
+    </script>
+</body>
+
+</html>
